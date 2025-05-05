@@ -12,33 +12,26 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const compat = new FlatCompat({
-	baseDirectory: __dirname,
-	recommendedConfig: js.configs.recommended,
+  baseDirectory: __dirname,
+  recommendedConfig: js.configs.recommended,
 });
 
 export default defineConfig([
-	globalIgnores(['**/node_modules', '**/.next', '**/build']),
-	{
-		extends: fixupConfigRules(
-			compat.extends(
-				'prettier',
-				'next',
-				'next/core-web-vitals',
-				'next/typescript',
-			),
-		),
+  globalIgnores(['**/node_modules', '**/.next', '**/build']),
+  {
+    extends: fixupConfigRules(compat.extends('prettier', 'next', 'next/core-web-vitals', 'next/typescript')),
 
-		plugins: {
-			'unused-imports': unusedImports,
-			import: fixupPluginRules(_import),
-		},
+    plugins: {
+      'unused-imports': unusedImports,
+      import: fixupPluginRules(_import),
+    },
 
-		settings: {
-			react: {
-				version: 'detect',
-			},
-		},
+    settings: {
+      react: {
+        version: 'detect',
+      },
+    },
 
-		rules: {},
-	},
+    rules: {},
+  },
 ]);

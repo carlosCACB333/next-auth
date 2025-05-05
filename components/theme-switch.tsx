@@ -6,19 +6,11 @@ import { MoonIcon, SunIcon } from 'lucide-react';
 import { useTheme } from 'next-themes';
 
 export const ThemeSwitch = () => {
-	const { theme, setTheme } = useTheme();
-	const isSSR = useIsSSR();
+  const { theme, setTheme } = useTheme();
+  const isSSR = useIsSSR();
 
-	const onChange = () =>
-		theme === 'light' ? setTheme('dark') : setTheme('light');
-	const isSelected = theme === 'light' || isSSR;
+  const onChange = () => (theme === 'light' ? setTheme('dark') : setTheme('light'));
+  const isSelected = theme === 'light' || isSSR;
 
-	return (
-		<Switch
-			endContent={<SunIcon />}
-			isSelected={isSelected}
-			startContent={<MoonIcon />}
-			onChange={onChange}
-		/>
-	);
+  return <Switch endContent={<SunIcon />} isSelected={isSelected} startContent={<MoonIcon />} onChange={onChange} />;
 };

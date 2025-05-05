@@ -10,30 +10,25 @@ import { useRouter } from 'next/navigation';
 import { ReactNode, Suspense } from 'react';
 
 export interface ProvidersProps {
-	children: ReactNode;
-	themeProps?: ThemeProviderProps;
+  children: ReactNode;
+  themeProps?: ThemeProviderProps;
 }
 
 declare module '@react-types/shared' {
-	interface RouterConfig {
-		routerOptions: NonNullable<
-			Parameters<ReturnType<typeof useRouter>['push']>[1]
-		>;
-	}
+  interface RouterConfig {
+    routerOptions: NonNullable<Parameters<ReturnType<typeof useRouter>['push']>[1]>;
+  }
 }
 
 export function Providers({ children, themeProps }: ProvidersProps) {
-	const router = useRouter();
+  const router = useRouter();
 
-	return (
-		<Suspense fallback={<Spinner />}>
-			<HeroUIProvider
-				className='flex min-h-dvh flex-col'
-				navigate={router.push}
-			>
-				<ToastProvider />
-				<NextThemesProvider {...themeProps}>{children}</NextThemesProvider>
-			</HeroUIProvider>
-		</Suspense>
-	);
+  return (
+    <Suspense fallback={<Spinner />}>
+      <HeroUIProvider className='flex min-h-dvh flex-col' navigate={router.push}>
+        <ToastProvider />
+        <NextThemesProvider {...themeProps}>{children}</NextThemesProvider>
+      </HeroUIProvider>
+    </Suspense>
+  );
 }

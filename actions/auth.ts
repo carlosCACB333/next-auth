@@ -13,117 +13,115 @@ import { SignUpFields, SignUpSchema } from '@/schema/signup';
 import { Status } from '@/types';
 
 interface AuthenticateState {
-	message?: string;
-	errors?: SignInFieldErrors;
-	data?: SignInFields;
+  message?: string;
+  errors?: SignInFieldErrors;
+  data?: SignInFields;
 }
 
 export async function authenticate(
-	prevState: AuthenticateState | undefined,
-	formData?: FormData,
+  prevState: AuthenticateState | undefined,
+  formData?: FormData
 ): Promise<AuthenticateState> {
-	const rawData = {
-		email: formData?.get('email'),
-		password: formData?.get('password'),
-	} as SignInFields;
+  const rawData = {
+    email: formData?.get('email'),
+    password: formData?.get('password'),
+  } as SignInFields;
 
-	const provider = formData?.get('provider') as ProviderId;
-	const redirectTo = formData?.get('redirectTo') as string;
+  const provider = formData?.get('provider') as ProviderId;
+  const redirectTo = formData?.get('redirectTo') as string;
 
-	try {
-		if (provider === 'credentials') {
-			const { success, data, error } = SignInSchema.safeParse(rawData);
+  try {
+    if (provider === 'credentials') {
+      const { success, data, error } = SignInSchema.safeParse(rawData);
 
-			const errors: SignInFieldErrors = success
-				? {}
-				: error.formErrors.fieldErrors;
+      const errors: SignInFieldErrors = success ? {} : error.formErrors.fieldErrors;
 
-			if (!success) {
-				return {
-					errors,
-					data: rawData,
-					message: 'Datos incorrectos',
-				};
-			}
+      if (!success) {
+        return {
+          errors,
+          data: rawData,
+          message: 'Datos incorrectos',
+        };
+      }
 
-			await signIn(provider, { redirectTo, ...data });
-		} else {
-			await signIn(provider, {
-				redirectTo,
-			});
-		}
+      await signIn(provider, { redirectTo, ...data });
+    } else {
+      await signIn(provider, {
+        redirectTo,
+      });
+    }
 
-		return {};
-	} catch (error) {
-		let message = 'Ocurrió un error inesperado. Intente más tarde';
+    return {};
+  } catch (error) {
+    let message = 'Ocurrió un error inesperado. Intente más tarde';
 
-		if (error instanceof AuthError) {
-			switch (error.name) {
-				case 'CredentialsSignin':
-					message = 'Credenciales incorrectas';
-					break;
+    if (error instanceof AuthError) {
+      switch (error.name) {
+        case 'CredentialsSignin':
+          message = 'Credenciales incorrectas';
+          break;
 
-				case 'Configuration':
-					message = 'Error de configuración';
-					break;
-			}
+        case 'Configuration':
+          message = 'Error de configuración';
+          break;
+      }
 
-			return {
-				message,
-			};
-		}
+      return {
+        message,
+      };
+    }
 
-		throw error;
-	}
+    throw error;
+  }
 }
 
 export const handleSignOut = async () => {
-	await signOut();
+  await signOut();
 };
 
 export const signUpUser = async (
-	form: SignUpFields,
+  form: SignUpFields
 ): Promise<{ status: Status; errors?: SignInFieldErrors; message: string }> => {
-	const { success, data, error } = SignUpSchema.safeParse(form);
+  const { success, data, error } = SignUpSchema.safeParse(form);
 
-	const errors: SignInFieldErrors = success ? {} : error.formErrors.fieldErrors;
+  const errors: SignInFieldErrors = success ? {} : error.formErrors.fieldErrors;
 
-	if (!success) {
-		return {
-			status: Status.FAILED,
-			errors,
-			message: 'Datos incorrectos',
-		};
-	}
+  if (!success) {
+    return {
+      status: Status.FAILED,
+      errors,
+      message: 'Datos incorrectos',
+    };
+  }
 
-	const userExists = await prisma.user.findUnique({
-		where: { email: data.email },
-	});
+  const userExists = await prisma.user.findUnique({
+    where: { email: data.email },
+  });
 
-	if (userExists) {
-		return {
-			status: Status.FAILED,
-			errors: {
-				email: ['El correo electrónico ya está en uso'],
-			},
-			message: 'El correo electrónico ya está en uso',
-		};
-	}
+  if (userExists) {
+    return {
+      status: Status.FAILED,
+      errors: {
+        email: ['El correo electrónico ya está en uso'],
+      },
+      message: 'El correo electrónico ya está en uso',
+    };
+  }
 
-	await prisma.user.create({
-		data: {
-			name: data.name,
-			email: data.email,
-			image: data.image,
-			password: await hashPassword(data.password),
-		},
-	});
+  await prisma.user.create({
+    data: {
+      name: data.name,
+      email: data.email,
+      image: data.image,
+      password: await hashPassword(data.password),
+    },
+  });
 
-	redirect(appRoutes.auth.newUser.to);
+  redirect(appRoutes.auth.newUser.to);
 };
 
 export const findUserByEmail = async (email: string) => {
-	return await prisma.user.findUnique({
-		where: { email },
-	});
+  return await prisma.user.findUnique({
+    where: { email },
+  });
 };

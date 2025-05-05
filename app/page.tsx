@@ -7,6 +7,7 @@ import { appRoutes } from '@/config/routes';
 export default function Home() {
 	return (
 		<section className='flex flex-col items-center justify-center gap-4 py-8 md:py-10'>
+			<img src='/logo.png' alt='Logo' />;
 			<div className='inline-block max-w-xl justify-center text-center'>
 				<span className={title()}>Make&nbsp;</span>
 				<span className={title({ color: 'violet' })}>beautiful&nbsp;</span>
@@ -18,7 +19,6 @@ export default function Home() {
 					Beautiful, fast and modern React UI library.
 				</div>
 			</div>
-
 			<div className='flex gap-3'>
 				<Link
 					className={buttonStyles({

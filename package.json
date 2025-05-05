@@ -7,10 +7,10 @@
 		"build": "next build",
 		"start": "next start",
 		"lint": "next lint --fix",
-		"prettier": "prettier --write ."
+		"prettier": "prettier --write .",
+		"prepare": "husky || true"
 	},
 	"dependencies": {
-		"-": "^0.0.1",
 		"@auth/prisma-adapter": "^2.9.0",
 		"@heroui/alert": "^2.2.19",
 		"@heroui/avatar": "^2.2.15",
@@ -53,9 +53,10 @@
 		"eslint": "^9.26.0",
 		"eslint-config-next": "^15.3.1",
 		"eslint-config-prettier": "^10.1.2",
-		"eslint-plugin-import": "^2.31.0",
 		"eslint-plugin-prettier": "5.2.6",
 		"eslint-plugin-unused-imports": "4.1.4",
+		"husky": "^9.1.7",
+		"lint-staged": "^15.5.1",
 		"postcss": "8.5.3",
 		"prettier": "3.5.3",
 		"prettier-plugin-tailwindcss": "^0.6.11",
@@ -63,5 +64,14 @@
 		"tailwind-variants": "1.0.0",
 		"tailwindcss": "3.4.17",
 		"typescript": "5.8.3"
+	},
+	"lint-staged": {
+		"**/*.{js,ts,tsx}": [
+			"bunx eslint --fix",
+			"bunx prettier --write"
+		],
+		"**/*.{json,md,css,scss,html}": [
+			"bunx prettier --write"
+		]
 	}
 }

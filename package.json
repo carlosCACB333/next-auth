@@ -67,11 +67,11 @@
 	},
 	"lint-staged": {
 		"**/*.{js,ts,tsx}": [
-			"bunx eslint --fix",
-			"bunx prettier --write"
+			"eslint --fix",
+			"prettier --write"
 		],
 		"**/*.{json,md,css,scss,html}": [
-			"bunx prettier --write"
+			"prettier --write"
 		]
 	}
 }
